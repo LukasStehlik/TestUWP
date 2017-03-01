@@ -28,13 +28,13 @@
     <AppXManifest Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\bin\x64\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-02-23T10:20:34.564</Modified>
+      <Modified>2017-03-01T21:06:03.732</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\bin\x64\Debug\Test1.exe">
       <PackagePath>entrypoint\Test1.exe</PackagePath>
-      <Modified>2017-02-23T10:20:33.837</Modified>
+      <Modified>2017-03-01T21:06:01.389</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Lukáš\.nuget\packages\Microsoft.CSharp\4.0.0\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -448,9 +448,9 @@
       <PackagePath>System.Xml.XmlSerializer.dll</PackagePath>
       <Modified>2015-07-22T21:11:12.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\Properties\Default.rd.xml">
-      <PackagePath>Properties\Default.rd.xml</PackagePath>
-      <Modified>2017-02-16T08:38:27.422</Modified>
+    <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\Assets\white-menu-icon.png">
+      <PackagePath>Assets\white-menu-icon.png</PackagePath>
+      <Modified>2017-03-01T21:00:37.402</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\Assets\LockScreenLogo.scale-200.png">
       <PackagePath>Assets\LockScreenLogo.scale-200.png</PackagePath>
@@ -486,9 +486,13 @@
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
       <Modified>2015-09-20T16:30:08.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\Properties\Default.rd.xml">
+      <PackagePath>Properties\Default.rd.xml</PackagePath>
+      <Modified>2017-02-16T08:38:27.422</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\bin\x64\Debug\Test1.xr.xml">
       <PackagePath>Test1.xr.xml</PackagePath>
-      <Modified>2017-02-23T10:17:00.261</Modified>
+      <Modified>2017-03-01T21:06:00.927</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -497,11 +501,11 @@
     <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\bin\x64\Debug\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-02-23T10:17:02.318</Modified>
+      <Modified>2017-03-01T21:06:03.321</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\bin\x64\Debug\Core\Test1.exe">
       <PackagePath>Test1.exe</PackagePath>
-      <Modified>2017-02-23T10:20:34.557</Modified>
+      <Modified>2017-03-01T21:06:03.710</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

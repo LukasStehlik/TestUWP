@@ -7,18 +7,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ToggleButton x:ConnectionId='1' x:Name="toggleButton" HorizontalAlignment="Left" Height="40" Margin="5,5,0,0" VerticalAlignment="Top" Width="45" Content="-!-!-"                           />
+    <Grid Background="{ThemeResource AppBarBackground}">
+        <CaptureElement x:ConnectionId='1' x:Name="PreviewControl" Stretch="Uniform"/>
         <SplitView x:ConnectionId='2' x:Name="Splitter" HorizontalAlignment="Left" Height="190" VerticalAlignment="Top" IsPaneOpen="True" Width="360" Margin="0,55,0,0">
             <SplitView.Pane>
-                <Grid Margin="0,0,30,0">
-                    <TextBox x:ConnectionId='4' x:Name="textBox" HorizontalAlignment="Left" Margin="166,35,0,0" TextWrapping="Wrap" Text="Nic" VerticalAlignment="Top"/>
-                    <Button x:ConnectionId='5' x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="65,35,0,0" VerticalAlignment="Top"                     />
+                <Grid Margin="0,0,5,0">
+                    <Button x:ConnectionId='5' x:Name="button" Content="Camera" HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top"                     />
                 </Grid>
             </SplitView.Pane>
         </SplitView>
+        <ToggleButton x:ConnectionId='3' x:Name="toggleButton" HorizontalAlignment="Left" Height="40" Margin="10,10,0,0" VerticalAlignment="Top" Width="45"                            FontFamily="Segoe MDL2 Assets" Content="">
+            <ToggleButton.Background>
+                <ImageBrush Stretch="Fill" ImageSource="Assets/white-menu-icon.png"/>
+            </ToggleButton.Background>
+        </ToggleButton>
 
-        <CaptureElement x:ConnectionId='3' Name="PreviewControl" Stretch="Uniform" Margin="85,395,75,60"/>
+        <TextBlock x:ConnectionId='4' x:Name="txtMagnetic" HorizontalAlignment="Left" Margin="50,275,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <StackPanel HorizontalAlignment="Left" Height="50" Margin="65,510,0,0" VerticalAlignment="Top" Width="175"/>
 
     </Grid>
 </Page>
