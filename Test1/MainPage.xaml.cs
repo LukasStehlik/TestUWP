@@ -60,6 +60,7 @@ namespace Test1
             }
         }
 
+        //Vypnutie kamery
         private async Task CleanupCameraAsync()
         {
             if (_mediaCapture != null)
@@ -84,6 +85,7 @@ namespace Test1
 
         }
 
+        //Stlačenie tlačidla
         private async void button_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("Test");
@@ -94,6 +96,7 @@ namespace Test1
             await StartPreviewAsync();
         }
 
+        //Vypnutie aplikácie
         private async void Application_Suspending(object sender, SuspendingEventArgs e)
         {
             // Handle global application events only if this page is active
@@ -105,16 +108,19 @@ namespace Test1
             }
         }
 
+        //Odídenie z aplikácie
         protected async override void OnNavigatedFrom(NavigationEventArgs e)
         {
             await CleanupCameraAsync();
         }
 
+        //Stlačenie tlačidla
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             Splitter.IsPaneOpen = false;
         }
 
+        //Stlačenie toggle tlačidla
         private void toggleButton_Click(object sender, RoutedEventArgs e)
         {
             toggleButton.IsChecked = false;
