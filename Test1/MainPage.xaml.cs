@@ -51,9 +51,14 @@ namespace Test1
             {
                 // Establish the report interval for all scenarios
                 uint minReportInterval = _compass.MinimumReportInterval;
-                uint reportInterval = minReportInterval > 16 ? minReportInterval : 16;
+                uint reportInterval = 100;// minReportInterval > 16 ? minReportInterval : 16;
                 _compass.ReportInterval = reportInterval;
                 _compass.ReadingChanged += new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Compass failure");
+                txtMagnetic.Text = "Compass failure";
             }
 
         }
@@ -157,6 +162,9 @@ namespace Test1
                 var deferral = e.SuspendingOperation.GetDeferral();
                 await CleanupCameraAsync();
                 deferral.Complete();
+
+                _compass.ReportInterval = 0;
+                _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
             }
         }
 
@@ -164,6 +172,8 @@ namespace Test1
         protected async override void OnNavigatedFrom(NavigationEventArgs e)
         {
             await CleanupCameraAsync();
+            _compass.ReportInterval = 0;
+            _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
         }
 
         //Stlačenie toggle tlačidla
