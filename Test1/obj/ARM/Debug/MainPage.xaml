@@ -9,10 +9,10 @@
 
     <Grid Background="{ThemeResource AppBarBackground}">
         <CaptureElement x:ConnectionId='1' x:Name="PreviewControl" Stretch="Uniform"/>
-        <SplitView x:ConnectionId='2' x:Name="Splitter" HorizontalAlignment="Left" Height="190" VerticalAlignment="Top" IsPaneOpen="True" Width="360" Margin="0,55,0,0">
+        <SplitView x:ConnectionId='2' x:Name="Splitter" HorizontalAlignment="Left" Height="190" VerticalAlignment="Top" IsPaneOpen="True" Width="360" Margin="0,79,0,0">
             <SplitView.Pane>
                 <Grid Margin="0,0,5,0">
-                    <Button x:ConnectionId='5' x:Name="button" Content="Camera" HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top"                     />
+                    <Button x:ConnectionId='6' x:Name="button" Content="Camera" HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top"                     />
                 </Grid>
             </SplitView.Pane>
         </SplitView>
@@ -22,8 +22,13 @@
             </ToggleButton.Background>
         </ToggleButton>
 
-        <TextBlock x:ConnectionId='4' x:Name="txtMagnetic" HorizontalAlignment="Left" Margin="50,275,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <TextBlock x:ConnectionId='4' x:Name="txtMagnetic" TextAlignment="Center" Margin="120,15,120,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="55" FontSize="20" MaxLines="2">
+            <Run Text="Smer"/>
+            <LineBreak/>
+            <Run Text="...°"/>
+        </TextBlock>
         <StackPanel HorizontalAlignment="Left" Height="50" Margin="65,510,0,0" VerticalAlignment="Top" Width="175"/>
+        <Image x:ConnectionId='5' x:Name="image" HorizontalAlignment="Left" Height="45" Margin="300,15,0,0" VerticalAlignment="Top" Width="45" RenderTransformOrigin="0.5,0.5" Source="Assets/strelka.png"/>
 
     </Grid>
 </Page>

@@ -334,6 +334,9 @@
     <AppxPackagedFile Include="C:\Users\Lukáš\.nuget\packages\System.Xml.XmlSerializer\4.0.10\lib\netcore50\System.Xml.XmlSerializer.dll">
       <PackagePath>System.Xml.XmlSerializer.dll</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\Assets\strelka.png">
+      <PackagePath>Assets\strelka.png</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Lukáš\Documents\Visual Studio 2015\Projects\Test1\Test1\Assets\white-menu-icon.png">
       <PackagePath>Assets\white-menu-icon.png</PackagePath>
     </AppxPackagedFile>

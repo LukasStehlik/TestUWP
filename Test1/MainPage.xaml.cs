@@ -33,7 +33,7 @@ namespace Test1
 
         Compass _compass;
 
-        DisplayRequest _displayRequest;
+        DisplayRequest _displayRequest = new DisplayRequest();
 
         // Rotation metadata to apply to the preview stream (MF_MT_VIDEO_ROTATION)
         // Reference: http://msdn.microsoft.com/en-us/library/windows/apps/xaml/hh868174.aspx
@@ -44,6 +44,7 @@ namespace Test1
             this.InitializeComponent();
 
             Application.Current.Suspending += Application_Suspending;
+            Application.Current.Resuming += Application_Resuming;
 
             _compass = Compass.GetDefault(); // Get the default compass object
             // Assign an event handler for the compass reading-changed event
@@ -51,14 +52,14 @@ namespace Test1
             {
                 // Establish the report interval for all scenarios
                 uint minReportInterval = _compass.MinimumReportInterval;
-                uint reportInterval = 100;// minReportInterval > 16 ? minReportInterval : 16;
+                uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
                 _compass.ReportInterval = reportInterval;
                 _compass.ReadingChanged += new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
             }
             else
             {
                 System.Diagnostics.Debug.WriteLine("Compass failure");
-                txtMagnetic.Text = "Compass failure";
+                txtMagnetic.Text = "Compass\nfailure";
             }
 
         }
@@ -66,13 +67,26 @@ namespace Test1
         //Zmena údajov magnetometra
         private async void CompassReadingChanged(object sender, CompassReadingChangedEventArgs e)
         {
+            String smer;
+
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 CompassReading reading = e.Reading;
+                RotateTransform _rotateTransform = new RotateTransform();
+
                 if (reading.HeadingTrueNorth.HasValue)
-                    txtMagnetic.Text = String.Format("{0,5:0.00}", reading.HeadingTrueNorth);
-                else
-                    txtMagnetic.Text = "No reading.";
+                {
+                    if (reading.HeadingTrueNorth >= 315 || reading.HeadingTrueNorth < 45) smer = "Sever";
+                    else if (reading.HeadingTrueNorth >= 45 && reading.HeadingTrueNorth < 135) smer = "Východ";
+                    else if (reading.HeadingTrueNorth >= 135 && reading.HeadingTrueNorth < 225) smer = "Juh";
+                    else smer = "Západ";
+
+                    _rotateTransform.Angle = 360 - (int)reading.HeadingTrueNorth;
+                    image.RenderTransform = _rotateTransform;
+
+                    txtMagnetic.Text = smer + "\n" + String.Format("{0,3:0}°", reading.HeadingTrueNorth);
+                } 
+                else txtMagnetic.Text = "No reading.";
             });
         }
 
@@ -89,7 +103,7 @@ namespace Test1
                 _isPreviewing = true;
 
                 _displayRequest.RequestActive();
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.None;
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
             }
             catch (UnauthorizedAccessException)
             {
@@ -162,9 +176,32 @@ namespace Test1
                 var deferral = e.SuspendingOperation.GetDeferral();
                 await CleanupCameraAsync();
                 deferral.Complete();
+                if(_compass != null)
+                {
+                    _compass.ReportInterval = 0;
+                    _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
+                }
+            }
+        }
 
-                _compass.ReportInterval = 0;
-                _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
+        private void Application_Resuming(object sender, object e)
+        {
+            // Handle global application events only if this page is active
+            if (Frame.CurrentSourcePageType == typeof(MainPage))
+            {
+                if (_compass != null)
+                {
+                    // Establish the report interval for all scenarios
+                    uint minReportInterval = _compass.MinimumReportInterval;
+                    uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
+                    _compass.ReportInterval = reportInterval;
+                    _compass.ReadingChanged += new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Compass failure");
+                    txtMagnetic.Text = "Compass\nfailure";
+                }
             }
         }
 
@@ -172,9 +209,29 @@ namespace Test1
         protected async override void OnNavigatedFrom(NavigationEventArgs e)
         {
             await CleanupCameraAsync();
-            _compass.ReportInterval = 0;
-            _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
+            if (_compass != null)
+            {
+                _compass.ReportInterval = 0;
+                _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
+            }
         }
+
+        /*protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (_compass != null)
+            {
+                // Establish the report interval for all scenarios
+                uint minReportInterval = _compass.MinimumReportInterval;
+                uint reportInterval = 50;// minReportInterval > 16 ? minReportInterval : 16;
+                _compass.ReportInterval = reportInterval;
+                _compass.ReadingChanged += new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Compass failure");
+                txtMagnetic.Text = "Compass\nfailure";
+            }
+        }*/
 
         //Stlačenie toggle tlačidla
         private void toggleButton_Click(object sender, RoutedEventArgs e)
