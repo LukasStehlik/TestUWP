@@ -45,6 +45,8 @@
       <RootProperty Name="FontSize" />
       <RootProperty Name="MaxLines" />
       <RootProperty Name="Inlines" />
+      <RootProperty Name="HorizontalAlignment" />
+      <RootProperty Name="Text" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.StackPanel">
       <RootProperty Name="HorizontalAlignment" />

@@ -32,6 +32,7 @@ namespace Test1
         bool _isPreviewing;
 
         Compass _compass;
+        LightSensor _lightsensor;
 
         DisplayRequest _displayRequest = new DisplayRequest();
 
@@ -46,6 +47,7 @@ namespace Test1
             Application.Current.Suspending += Application_Suspending;
             Application.Current.Resuming += Application_Resuming;
 
+            //Compass
             _compass = Compass.GetDefault(); // Get the default compass object
             // Assign an event handler for the compass reading-changed event
             if (_compass != null)
@@ -61,6 +63,20 @@ namespace Test1
                 System.Diagnostics.Debug.WriteLine("Compass failure");
                 txtMagnetic.Text = "Compass\nfailure";
             }
+
+            //Light Sensor
+            _lightsensor = LightSensor.GetDefault();
+            if (_lightsensor != null)
+            {
+                // Establish the report interval for all scenarios
+                uint minReportInterval = _lightsensor.MinimumReportInterval;
+                uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
+                _lightsensor.ReportInterval = reportInterval;
+
+                // Establish the even thandler
+                _lightsensor.ReadingChanged += new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
+            }
+
 
         }
 
@@ -88,6 +104,15 @@ namespace Test1
                 } 
                 else txtMagnetic.Text = "No reading.";
             });
+        }
+
+        private async void LightReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+             {
+                 LightSensorReading reading = e.Reading;
+                 LightText.Text = String.Format("{0,5:0.0}Lux", reading.IlluminanceInLux);
+             });
         }
 
         //Spustenie kamery
@@ -176,19 +201,30 @@ namespace Test1
                 var deferral = e.SuspendingOperation.GetDeferral();
                 await CleanupCameraAsync();
                 deferral.Complete();
+
+                //Vypnutie kompasu
                 if(_compass != null)
                 {
                     _compass.ReportInterval = 0;
                     _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
                 }
+
+                //Vypnutie Light senzora
+                if(_lightsensor !=null)
+                {
+                    _lightsensor.ReportInterval = 0;
+                    _lightsensor.ReadingChanged -= new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
+                }
             }
         }
 
+        //Obnovenie aplikácie
         private void Application_Resuming(object sender, object e)
         {
             // Handle global application events only if this page is active
             if (Frame.CurrentSourcePageType == typeof(MainPage))
             {
+                //Zapnutie kompasu
                 if (_compass != null)
                 {
                     // Establish the report interval for all scenarios
@@ -201,6 +237,21 @@ namespace Test1
                 {
                     System.Diagnostics.Debug.WriteLine("Compass failure");
                     txtMagnetic.Text = "Compass\nfailure";
+                }
+
+                //Zapnutie Light senzoru
+                if (_lightsensor != null)
+                {
+                    // Establish the report interval for all scenarios
+                    uint minReportInterval = _lightsensor.MinimumReportInterval;
+                    uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
+                    _lightsensor.ReportInterval = reportInterval;
+                    _lightsensor.ReadingChanged += new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Ligth Sensor failure");
+                    txtMagnetic.Text = "LightSensor\nfailure";
                 }
             }
         }
