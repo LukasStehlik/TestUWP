@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors; // Required to access the sensor platform and the compass
+using Windows.Devices.Enumeration;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -33,6 +34,9 @@ namespace Test1
 
         Compass _compass;
         LightSensor _lightsensor;
+
+        ProximitySensor _proximitysensor;
+        DeviceWatcher _watcher;
 
         DisplayRequest _displayRequest = new DisplayRequest();
 
@@ -77,7 +81,56 @@ namespace Test1
                 _lightsensor.ReadingChanged += new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
             }
 
+            //Proximity Sensor
+            if (_lightsensor != null)
+            {
+                // Establish the report interval for all scenarios
+                uint minReportInterval = _lightsensor.MinimumReportInterval;
+                uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
+                _lightsensor.ReportInterval = reportInterval;
 
+                // Establish the even thandler
+                _lightsensor.ReadingChanged += new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
+            }
+
+            //Watcher pre nájdenie Proximity senzoru
+            _watcher = DeviceInformation.CreateWatcher(ProximitySensor.GetDeviceSelector());
+            _watcher.Added += OnProximitySensorAdded;
+            _watcher.Start();
+        }
+
+        //Invoke when Proximity sensor found
+        private void OnProximitySensorAdded(DeviceWatcher sender, DeviceInformation device)
+        {
+            if (null == _proximitysensor)
+            {
+                ProximitySensor foundSensor = ProximitySensor.FromId(device.Id);
+                if (null != foundSensor)
+                {
+                    if (null != foundSensor)
+                    {
+                        _proximitysensor = foundSensor;
+                        _proximitysensor.ReadingChanged += new TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>(ProximityReadingChanged);
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Could not get a proximity sensor from the device id");
+                }
+            }
+        }
+
+        //Zmena údajov proximity snímača
+        async private void ProximityReadingChanged(ProximitySensor sender, ProximitySensorReadingChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                ProximitySensorReading reading = e.Reading;
+                if (null != reading)
+                {
+                    ProximityText.Text = reading.IsDetected ? "Detected" : "Not detected";
+                }
+            });
         }
 
         //Zmena údajov magnetometra
@@ -202,19 +255,7 @@ namespace Test1
                 await CleanupCameraAsync();
                 deferral.Complete();
 
-                //Vypnutie kompasu
-                if(_compass != null)
-                {
-                    _compass.ReportInterval = 0;
-                    _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
-                }
-
-                //Vypnutie Light senzora
-                if(_lightsensor !=null)
-                {
-                    _lightsensor.ReportInterval = 0;
-                    _lightsensor.ReadingChanged -= new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
-                }
+                TurnOffSensors();
             }
         }
 
@@ -251,7 +292,18 @@ namespace Test1
                 else
                 {
                     System.Diagnostics.Debug.WriteLine("Ligth Sensor failure");
-                    txtMagnetic.Text = "LightSensor\nfailure";
+                    LightText.Text = "LightSensor\nfailure";
+                }
+
+                //Zapnutie Proximity senzora
+                if (_lightsensor != null)
+                {
+                    _proximitysensor.ReadingChanged += new TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>(ProximityReadingChanged);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Proximity Sensor failure");
+                    LightText.Text = "ProximitySensor\nfailure";
                 }
             }
         }
@@ -260,10 +312,29 @@ namespace Test1
         protected async override void OnNavigatedFrom(NavigationEventArgs e)
         {
             await CleanupCameraAsync();
+            TurnOffSensors();
+        }
+
+        void TurnOffSensors()
+        {
+            //Vypnutie kompasu
             if (_compass != null)
             {
                 _compass.ReportInterval = 0;
                 _compass.ReadingChanged -= new TypedEventHandler<Compass, CompassReadingChangedEventArgs>(CompassReadingChanged);
+            }
+
+            //Vypnutie Light senzora
+            if (_lightsensor != null)
+            {
+                _lightsensor.ReportInterval = 0;
+                _lightsensor.ReadingChanged -= new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
+            }
+
+            //Vypnutie Proximity senzora
+            if (_lightsensor != null)
+            {
+                _proximitysensor.ReadingChanged -= new TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>(ProximityReadingChanged);
             }
         }
 

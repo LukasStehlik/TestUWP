@@ -189,4 +189,3 @@ c:\users\lukáš\documents\visual studio 2015\Projects\Test1\Test1\obj\ARM\Debug
 c:\users\lukáš\documents\visual studio 2015\Projects\Test1\Test1\obj\ARM\Debug\qualifiers.txt.intermediate
 c:\users\lukáš\documents\visual studio 2015\Projects\Test1\Test1\obj\ARM\Debug\MultipleQualifiersPerDimensionFound.txt
 c:\users\lukáš\documents\visual studio 2015\Projects\Test1\Test1\obj\ARM\Debug\ProjectArchitectures.txt
-C:\Users\Lukáš\documents\visual studio 2015\Projects\Test1\Test1\obj\ARM\Debug\Test1.csprojResolveAssemblyReference.cache
