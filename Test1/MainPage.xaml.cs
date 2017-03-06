@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors; // Required to access the sensor platform and the compass
 using Windows.Devices.Enumeration;
+using Windows.UI;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -164,7 +165,11 @@ namespace Test1
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
              {
                  LightSensorReading reading = e.Reading;
-                 LightText.Text = String.Format("{0,5:0.0}Lux", reading.IlluminanceInLux);
+                 //LightText.Text = String.Format("{0,5:0.0}Lux", reading.IlluminanceInLux);
+                 LightBar.Value = reading.IlluminanceInLux;
+                 if(e.Reading.IlluminanceInLux<500) LightBar.Foreground = new SolidColorBrush(Colors.LightSeaGreen);
+                 else if(e.Reading.IlluminanceInLux < 1000) LightBar.Foreground = new SolidColorBrush(Colors.Yellow);
+                 else LightBar.Foreground = new SolidColorBrush(Colors.Red);
              });
         }
 
