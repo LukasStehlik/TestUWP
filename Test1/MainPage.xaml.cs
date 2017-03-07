@@ -167,8 +167,10 @@ namespace Test1
                  LightSensorReading reading = e.Reading;
                  //LightText.Text = String.Format("{0,5:0.0}Lux", reading.IlluminanceInLux);
                  LightBar.Value = reading.IlluminanceInLux;
-                 if(e.Reading.IlluminanceInLux<500) LightBar.Foreground = new SolidColorBrush(Colors.LightSeaGreen);
-                 else if(e.Reading.IlluminanceInLux < 1000) LightBar.Foreground = new SolidColorBrush(Colors.Yellow);
+                 if(e.Reading.IlluminanceInLux < 500) LightBar.Foreground = new SolidColorBrush(Colors.LightSeaGreen);
+                 else if (e.Reading.IlluminanceInLux < 750) LightBar.Foreground = new SolidColorBrush(Colors.Green);
+                 else if (e.Reading.IlluminanceInLux < 1000) LightBar.Foreground = new SolidColorBrush(Colors.Yellow);
+                 else if (e.Reading.IlluminanceInLux < 1200) LightBar.Foreground = new SolidColorBrush(Colors.Orange);
                  else LightBar.Foreground = new SolidColorBrush(Colors.Red);
              });
         }

@@ -1,0 +1,37 @@
+﻿<Page
+    x:Class="Test1.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Test1"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource AppBarBackground}">
+        <CaptureElement x:ConnectionId='1' x:Name="PreviewControl" Stretch="Uniform"/>
+        <SplitView x:ConnectionId='2' x:Name="Splitter" HorizontalAlignment="Left" Height="190" VerticalAlignment="Top" IsPaneOpen="True" Width="360" Margin="0,79,0,0">
+            <SplitView.Pane>
+                <Grid Margin="0,0,5,0">
+                    <Button x:ConnectionId='9' x:Name="button" Content="Camera" HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top"                     />
+                </Grid>
+            </SplitView.Pane>
+        </SplitView>
+        <ToggleButton x:ConnectionId='3' x:Name="toggleButton" HorizontalAlignment="Left" Height="40" Margin="10,10,0,0" VerticalAlignment="Top" Width="45"                            FontFamily="Segoe MDL2 Assets" Content="">
+            <ToggleButton.Background>
+                <ImageBrush Stretch="Uniform" ImageSource="Assets/white-menu-icon.png"/>
+            </ToggleButton.Background>
+        </ToggleButton>
+
+        <TextBlock x:ConnectionId='4' x:Name="txtMagnetic" TextAlignment="Center" Margin="120,15,120,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="55" FontSize="20" MaxLines="2">
+            <Run Text="Smer"/>
+            <LineBreak/>
+            <Run Text="...°"/>
+        </TextBlock>
+        <Image x:ConnectionId='5' x:Name="image" HorizontalAlignment="Right" Height="45" Margin="0,15,15,0" VerticalAlignment="Top" Width="45" RenderTransformOrigin="0.5,0.5" Source="Assets/strelka.png"/>
+        <TextBlock x:ConnectionId='6' x:Name="LightText" HorizontalAlignment="Left" Margin="40,0,0,65" TextWrapping="Wrap" Text="LuxMeter" Height="20" VerticalAlignment="Bottom"/>
+        <TextBlock x:ConnectionId='7' x:Name="ProximityText" HorizontalAlignment="Left" Margin="90,415,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <ProgressBar x:ConnectionId='8' x:Name="LightBar" VerticalAlignment="Bottom" Margin="125,0,105,65" Maximum="1500" Value="500" Foreground="#FF728813" Height="15"/>
+
+    </Grid>
+</Page>
+
