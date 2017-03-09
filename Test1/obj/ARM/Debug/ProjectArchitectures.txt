@@ -1,1 +1,1 @@
-C:\Users\Marti\Documents\Visual Studio 2015\Projects\TestUWP\Test1\Test1.csproj;arm
+C:\Users\Lukáš\documents\visual studio 2015\Projects\Test1\Test1\Test1.csproj;arm

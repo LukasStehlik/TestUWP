@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.Devices.Sensors; // Required to access the sensor platform and the compass
 using Windows.Devices.Enumeration;
 using Windows.UI;
+using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -38,6 +39,7 @@ namespace Test1
 
         ProximitySensor _proximitysensor;
         DeviceWatcher _watcher;
+        Accelerometer _accelerometer;
 
         DisplayRequest _displayRequest = new DisplayRequest();
 
@@ -81,17 +83,28 @@ namespace Test1
                 // Establish the even thandler
                 _lightsensor.ReadingChanged += new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
             }
-
-            //Proximity Sensor
-            if (_lightsensor != null)
+            else
             {
-                // Establish the report interval for all scenarios
-                uint minReportInterval = _lightsensor.MinimumReportInterval;
-                uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
-                _lightsensor.ReportInterval = reportInterval;
+                System.Diagnostics.Debug.WriteLine("LightSensor failure");
+                LightText.Text = "LightSensor\nfailure";
+            }
 
-                // Establish the even thandler
-                _lightsensor.ReadingChanged += new TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>(LightReadingChanged);
+            //Accelerometer
+            _accelerometer = Accelerometer.GetDefault();
+            if (_accelerometer != null)
+            {
+                // Establish the report interval
+                uint minReportInterval = _accelerometer.MinimumReportInterval;
+                uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
+                _accelerometer.ReportInterval = reportInterval;
+
+                // Assign an event handler for the reading-changed event
+                _accelerometer.ReadingChanged += new TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>(AccelerometerReadingChanged);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Accelerometer failure");
+                AccelerometerText.Text = "Accelerometer\nfailure";
             }
 
             //Watcher pre nájdenie Proximity senzoru
@@ -120,6 +133,16 @@ namespace Test1
                 }
             }
         }
+
+        private async void AccelerometerReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                AccelerometerReading reading = e.Reading;
+                AccelerometerText.Text = String.Format("x={0,5:0.00} ", reading.AccelerationX) + String.Format("y={0,5:0.00} ", reading.AccelerationY) + String.Format("z={0,5:0.00}", reading.AccelerationZ);
+            });
+        }
+
 
         //Zmena údajov proximity snímača
         async private void ProximityReadingChanged(ProximitySensor sender, ProximitySensorReadingChangedEventArgs e)
@@ -224,7 +247,6 @@ namespace Test1
                     _mediaCapture = null;
                 });
             }
-
         }
 
         private async Task SetPreviewRotationAsync()
@@ -303,14 +325,31 @@ namespace Test1
                 }
 
                 //Zapnutie Proximity senzora
-                if (_lightsensor != null)
+                if (_proximitysensor != null)
                 {
                     _proximitysensor.ReadingChanged += new TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>(ProximityReadingChanged);
                 }
                 else
                 {
                     System.Diagnostics.Debug.WriteLine("Proximity Sensor failure");
-                    LightText.Text = "ProximitySensor\nfailure";
+                    ProximityText.Text = "ProximitySensor\nfailure";
+                }
+
+                //Zapnutie akcelerometra
+                if (_accelerometer != null)
+                {
+                    // Establish the report interval
+                    uint minReportInterval = _accelerometer.MinimumReportInterval;
+                    uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
+                    _accelerometer.ReportInterval = reportInterval;
+
+                    // Assign an event handler for the reading-changed event
+                    _accelerometer.ReadingChanged += new TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>(AccelerometerReadingChanged);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Accelerometer failure");
+                    AccelerometerText.Text = "Accelerometer\nfailure";
                 }
             }
         }
@@ -339,9 +378,16 @@ namespace Test1
             }
 
             //Vypnutie Proximity senzora
-            if (_lightsensor != null)
+            if (_proximitysensor != null)
             {
                 _proximitysensor.ReadingChanged -= new TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>(ProximityReadingChanged);
+            }
+
+            //Vypnutie Accelerometra
+            if(_accelerometer!=null)
+            {
+                _accelerometer.ReportInterval = 0;
+                _accelerometer.ReadingChanged -= new TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>(AccelerometerReadingChanged);
             }
         }
 
@@ -368,6 +414,12 @@ namespace Test1
             toggleButton.IsChecked = false;
             if (Splitter.IsPaneOpen == false) Splitter.IsPaneOpen = true;
             else Splitter.IsPaneOpen = false;
+
+            Line line1 = new Line();
+            line1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
+            line1.X2 = Plot.ActualWidth;
+            line1.Y2 = Plot.ActualHeight;
+            Plot.Children.Add(line1);
         }
     }
 }

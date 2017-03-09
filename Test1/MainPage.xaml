@@ -29,7 +29,9 @@
         </TextBlock>
         <Image x:Name="image" HorizontalAlignment="Right" Height="45" Margin="0,15,15,0" VerticalAlignment="Top" Width="45" RenderTransformOrigin="0.5,0.5" Source="Assets/strelka.png"/>
         <TextBlock x:Name="LightText" HorizontalAlignment="Left" Margin="40,0,0,65" TextWrapping="Wrap" Text="LuxMeter" Height="20" VerticalAlignment="Bottom"/>
-        <TextBlock x:Name="ProximityText" HorizontalAlignment="Left" Margin="90,415,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <TextBlock x:Name="ProximityText" HorizontalAlignment="Left" Margin="90,0,0,253" TextWrapping="Wrap" Text="Proximity" Height="20" VerticalAlignment="Bottom"/>
         <ProgressBar x:Name="LightBar" VerticalAlignment="Bottom" Margin="125,0,105,65" Maximum="1500" Value="500" Foreground="#FF728813" Height="15"/>
+        <TextBlock x:Name="AccelerometerText" HorizontalAlignment="Left" Margin="90,0,0,229" TextWrapping="Wrap" Text="TextBlock" Width="205" Height="20" VerticalAlignment="Bottom"/>
+        <Grid x:Name="Plot" Margin="30,0,30,100" Height="115" VerticalAlignment="Bottom" Background="#3FCECECE"/>
     </Grid>
 </Page>
