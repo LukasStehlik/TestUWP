@@ -17,7 +17,7 @@
         <SplitView x:ConnectionId='2' x:Name="Splitter" HorizontalAlignment="Left" Height="190" VerticalAlignment="Top" IsPaneOpen="True" Width="360" Margin="0,79,0,0" Grid.ColumnSpan="3">
             <SplitView.Pane>
                 <Grid Margin="0,0,5,0">
-                    <Button x:ConnectionId='13' x:Name="button" Content="Camera" HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top"                     />
+                    <Button x:ConnectionId='14' x:Name="button" Content="Camera" HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top"                     />
                 </Grid>
             </SplitView.Pane>
         </SplitView>
@@ -34,13 +34,14 @@
         </TextBlock>
         <Image x:ConnectionId='5' x:Name="image" HorizontalAlignment="Right" Height="60" Margin="0,15,15,0" VerticalAlignment="Top" Width="60" RenderTransformOrigin="0.5,0.5" Source="Assets/strelka.png" Grid.Column="2"/>
         <TextBlock x:ConnectionId='6' x:Name="LightText" HorizontalAlignment="Left" Margin="40,0,0,65" TextWrapping="Wrap" Text="LuxMeter" Height="20" VerticalAlignment="Bottom"/>
-        <TextBlock x:ConnectionId='7' x:Name="ProximityText" HorizontalAlignment="Left" Margin="90,0,0,253" TextWrapping="Wrap" Text="Proximity" Height="20" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
-        <ProgressBar x:ConnectionId='8' x:Name="LightBar" VerticalAlignment="Bottom" Margin="5,0,105,65" Maximum="1500" Value="500" Foreground="#FF728813" Height="15" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <Grid x:ConnectionId='9' x:Name="Plot" Margin="30,0,30,100" Height="115" VerticalAlignment="Bottom" Background="#7F969696" Grid.ColumnSpan="3"/>
+        <ProgressBar x:ConnectionId='7' x:Name="LightBar" VerticalAlignment="Bottom" Margin="5,0,105,65" Maximum="1500" Value="500" Foreground="#FF728813" Height="15" Grid.Column="1" Grid.ColumnSpan="2"/>
+        <Grid x:ConnectionId='8' x:Name="Plot" Margin="30,0,30,100" Height="115" VerticalAlignment="Bottom" Background="#7F969696" Grid.ColumnSpan="3"/>
         <Grid Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="30,0,0,220" Width="300" Background="#7F969696" Height="30" VerticalAlignment="Bottom"/>
-        <TextBlock x:ConnectionId='10' x:Name="AccXText" Margin="30,0,10,225" TextWrapping="Wrap" Text="AccX" Height="20" VerticalAlignment="Bottom" TextAlignment="Center" Foreground="Red"/>
-        <TextBlock x:ConnectionId='11' x:Name="AccYText" Margin="20,0,20,225" TextWrapping="Wrap" Text="AccY" Height="20" VerticalAlignment="Bottom" Grid.Column="1" TextAlignment="Center" Foreground="Lime"/>
-        <TextBlock x:ConnectionId='12' x:Name="AccZText" Margin="10,0,30,225" TextWrapping="Wrap" Text="AccZ" Height="20" VerticalAlignment="Bottom" Grid.Column="2" TextAlignment="Center" Foreground="Blue"/>
+        <TextBlock x:ConnectionId='9' x:Name="AccXText" Margin="30,0,10,225" TextWrapping="Wrap" Text="AccX" Height="20" VerticalAlignment="Bottom" TextAlignment="Center" Foreground="Red"/>
+        <TextBlock x:ConnectionId='10' x:Name="AccYText" Margin="20,0,20,225" TextWrapping="Wrap" Text="AccY" Height="20" VerticalAlignment="Bottom" Grid.Column="1" TextAlignment="Center" Foreground="Lime"/>
+        <TextBlock x:ConnectionId='11' x:Name="AccZText" Margin="10,0,30,225" TextWrapping="Wrap" Text="AccZ" Height="20" VerticalAlignment="Bottom" Grid.Column="2" TextAlignment="Center" Foreground="Blue"/>
+        <MediaElement x:ConnectionId='12' x:Name="mediaControl" HorizontalAlignment="Right" Height="25" Margin="0,15,15,0" VerticalAlignment="Top" Width="25" Source="Assets/FactoryAlarmSound.mp3" AutoPlay="False"/>
+        <Image x:ConnectionId='13' x:Name="ProximityImage" Margin="10,0,10,325" Source="Assets/Proximity.png" Height="100" VerticalAlignment="Bottom" Grid.Column="1"/>
     </Grid>
 </Page>
 

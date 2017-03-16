@@ -334,6 +334,12 @@
     <AppxPackagedFile Include="C:\Users\Lukáš\.nuget\packages\System.Xml.XmlSerializer\4.0.10\lib\netcore50\System.Xml.XmlSerializer.dll">
       <PackagePath>System.Xml.XmlSerializer.dll</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Lukáš\documents\visual studio 2015\Projects\Test1\Test1\Assets\FactoryAlarmSound.mp3">
+      <PackagePath>Assets\FactoryAlarmSound.mp3</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\Lukáš\documents\visual studio 2015\Projects\Test1\Test1\Assets\Proximity.png">
+      <PackagePath>Assets\Proximity.png</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Lukáš\documents\visual studio 2015\Projects\Test1\Test1\Assets\strelka.png">
       <PackagePath>Assets\strelka.png</PackagePath>
     </AppxPackagedFile>

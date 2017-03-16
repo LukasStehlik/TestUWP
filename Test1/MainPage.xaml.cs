@@ -21,6 +21,7 @@ using Windows.Devices.Sensors; // Required to access the sensor platform and the
 using Windows.Devices.Enumeration;
 using Windows.UI;
 using Windows.UI.Xaml.Shapes;
+using Windows.Storage;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -64,6 +65,9 @@ namespace Test1
 
             Application.Current.Suspending += Application_Suspending;
             Application.Current.Resuming += Application_Resuming;
+            
+            _displayRequest.RequestActive();
+            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
 
             PlotCounter = 0;
 
@@ -209,10 +213,7 @@ namespace Test1
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 ProximitySensorReading reading = e.Reading;
-                if (null != reading)
-                {
-                    ProximityText.Text = reading.IsDetected ? "Detected" : "Not detected";
-                }
+                if (null != reading) ProximityImage.Opacity = reading.IsDetected ? 100 : 0;
             });
         }
 
@@ -245,16 +246,18 @@ namespace Test1
         private async void LightReadingChanged(object sender, LightSensorReadingChangedEventArgs e)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-             {
-                 LightSensorReading reading = e.Reading;
-                 //LightText.Text = String.Format("{0,5:0.0}Lux", reading.IlluminanceInLux);
-                 LightBar.Value = reading.IlluminanceInLux;
-                 if(e.Reading.IlluminanceInLux < 500) LightBar.Foreground = new SolidColorBrush(Colors.LightSeaGreen);
-                 else if (e.Reading.IlluminanceInLux < 750) LightBar.Foreground = new SolidColorBrush(Colors.Green);
-                 else if (e.Reading.IlluminanceInLux < 1000) LightBar.Foreground = new SolidColorBrush(Colors.Yellow);
-                 else if (e.Reading.IlluminanceInLux < 1200) LightBar.Foreground = new SolidColorBrush(Colors.Orange);
-                 else LightBar.Foreground = new SolidColorBrush(Colors.Red);
-             });
+            {
+                LightSensorReading reading = e.Reading;
+                //LightText.Text = String.Format("{0,5:0.0}Lux", reading.IlluminanceInLux);
+                LightBar.Value = reading.IlluminanceInLux;
+                if (e.Reading.IlluminanceInLux < 500) LightBar.Foreground = new SolidColorBrush(Colors.LightSeaGreen);
+                else if (e.Reading.IlluminanceInLux < 750) LightBar.Foreground = new SolidColorBrush(Colors.Green);
+                else if (e.Reading.IlluminanceInLux < 1000) LightBar.Foreground = new SolidColorBrush(Colors.Yellow);
+                else if (e.Reading.IlluminanceInLux < 1200) LightBar.Foreground = new SolidColorBrush(Colors.Orange);
+                else LightBar.Foreground = new SolidColorBrush(Colors.Red);
+
+                if (reading.IlluminanceInLux > 1200) mediaControl.Play();
+            });
         }
 
         //Spustenie kamery
@@ -268,9 +271,6 @@ namespace Test1
                 PreviewControl.Source = _mediaCapture;
                 await _mediaCapture.StartPreviewAsync();
                 _isPreviewing = true;
-
-                _displayRequest.RequestActive();
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
             }
             catch (UnauthorizedAccessException)
             {
@@ -391,7 +391,6 @@ namespace Test1
                 else
                 {
                     System.Diagnostics.Debug.WriteLine("Proximity Sensor failure");
-                    ProximityText.Text = "ProximitySensor\nfailure";
                 }
 
                 //Zapnutie akcelerometra
@@ -473,8 +472,6 @@ namespace Test1
             toggleButton.IsChecked = false;
             if (Splitter.IsPaneOpen == false) Splitter.IsPaneOpen = true;
             else Splitter.IsPaneOpen = false;
-
-            PrintPlot();
         }
 
         void PrintPlot()

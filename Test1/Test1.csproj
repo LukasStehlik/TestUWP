@@ -107,6 +107,8 @@
     <None Include="Test1_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\FactoryAlarmSound.mp3" />
+    <Content Include="Assets\Proximity.png" />
     <Content Include="Assets\strelka.png" />
     <Content Include="Assets\white-menu-icon.png" />
     <Content Include="Properties\Default.rd.xml" />
