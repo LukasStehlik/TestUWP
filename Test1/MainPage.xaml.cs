@@ -31,6 +31,8 @@ namespace Test1
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public const int DataArraySize = 201;
+
         MediaCapture _mediaCapture;
         bool _isPreviewing;
 
@@ -40,6 +42,15 @@ namespace Test1
         ProximitySensor _proximitysensor;
         DeviceWatcher _watcher;
         Accelerometer _accelerometer;
+
+        double[] PlotDataX;
+        double[] PlotDataY;
+        double[] PlotDataZ;
+        Line line1;
+        Polyline polylineX;
+        Polyline polylineY;
+        Polyline polylineZ;
+        uint PlotCounter;
 
         DisplayRequest _displayRequest = new DisplayRequest();
 
@@ -53,6 +64,32 @@ namespace Test1
 
             Application.Current.Suspending += Application_Suspending;
             Application.Current.Resuming += Application_Resuming;
+
+            PlotCounter = 0;
+
+            line1 = new Line();
+            line1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
+
+            polylineX = new Polyline();
+            polylineX.Stroke = new SolidColorBrush(Windows.UI.Colors.Red);
+            polylineX.StrokeThickness = 1;
+
+            polylineY = new Polyline();
+            polylineY.Stroke = new SolidColorBrush(Windows.UI.Colors.LawnGreen);
+            polylineY.StrokeThickness = 1;
+
+            polylineZ = new Polyline();
+            polylineZ.Stroke = new SolidColorBrush(Windows.UI.Colors.Blue);
+            polylineZ.StrokeThickness = 1;
+
+            PlotDataX = new double[DataArraySize];
+            for (uint i = 0; i < DataArraySize; i++) PlotDataX[i] = 0;
+
+            PlotDataY = new double[DataArraySize];
+            for (uint i = 0; i < DataArraySize; i++) PlotDataY[i] = 0;
+
+            PlotDataZ = new double[DataArraySize];
+            for (uint i = 0; i < DataArraySize; i++) PlotDataZ[i] = 0;
 
             //Compass
             _compass = Compass.GetDefault(); // Get the default compass object
@@ -95,7 +132,7 @@ namespace Test1
             {
                 // Establish the report interval
                 uint minReportInterval = _accelerometer.MinimumReportInterval;
-                uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
+                uint reportInterval = minReportInterval > 25 ? minReportInterval : 25;
                 _accelerometer.ReportInterval = reportInterval;
 
                 // Assign an event handler for the reading-changed event
@@ -104,13 +141,14 @@ namespace Test1
             else
             {
                 System.Diagnostics.Debug.WriteLine("Accelerometer failure");
-                AccelerometerText.Text = "Accelerometer\nfailure";
+                AccXText.Text = "Error";
             }
 
             //Watcher pre nájdenie Proximity senzoru
             _watcher = DeviceInformation.CreateWatcher(ProximitySensor.GetDeviceSelector());
             _watcher.Added += OnProximitySensorAdded;
             _watcher.Start();
+            
         }
 
         //Invoke when Proximity sensor found
@@ -136,10 +174,31 @@ namespace Test1
 
         private async void AccelerometerReadingChanged(object sender, AccelerometerReadingChangedEventArgs e)
         {
+            double[] temp = new double[DataArraySize];
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 AccelerometerReading reading = e.Reading;
-                AccelerometerText.Text = String.Format("x={0,5:0.00} ", reading.AccelerationX) + String.Format("y={0,5:0.00} ", reading.AccelerationY) + String.Format("z={0,5:0.00}", reading.AccelerationZ);
+                AccXText.Text = String.Format("X={0,5:0.00}", reading.AccelerationX);
+                AccYText.Text = String.Format("Y={0,5:0.00}", reading.AccelerationY);
+                AccZText.Text = String.Format("Z={0,5:0.00}", reading.AccelerationZ);
+
+                Array.Copy(PlotDataX, 1, temp, 0, DataArraySize - 1);
+                temp[DataArraySize - 1] = reading.AccelerationX;
+                Array.Copy(temp, PlotDataX, DataArraySize);
+
+                Array.Copy(PlotDataY, 1, temp, 0, DataArraySize - 1);
+                temp[DataArraySize - 1] = reading.AccelerationY;
+                Array.Copy(temp, PlotDataY, DataArraySize);
+
+                Array.Copy(PlotDataZ, 1, temp, 0, DataArraySize - 1);
+                temp[DataArraySize - 1] = reading.AccelerationZ;
+                Array.Copy(temp, PlotDataZ, DataArraySize);
+
+                if (PlotCounter++ >= 3)
+                {
+                    PrintPlot();
+                    PlotCounter = 0;
+                }
             });
         }
 
@@ -340,7 +399,7 @@ namespace Test1
                 {
                     // Establish the report interval
                     uint minReportInterval = _accelerometer.MinimumReportInterval;
-                    uint reportInterval = minReportInterval > 50 ? minReportInterval : 50;
+                    uint reportInterval = minReportInterval > 25 ? minReportInterval : 25;
                     _accelerometer.ReportInterval = reportInterval;
 
                     // Assign an event handler for the reading-changed event
@@ -349,7 +408,7 @@ namespace Test1
                 else
                 {
                     System.Diagnostics.Debug.WriteLine("Accelerometer failure");
-                    AccelerometerText.Text = "Accelerometer\nfailure";
+                    AccXText.Text = "Error";
                 }
             }
         }
@@ -415,11 +474,55 @@ namespace Test1
             if (Splitter.IsPaneOpen == false) Splitter.IsPaneOpen = true;
             else Splitter.IsPaneOpen = false;
 
-            Line line1 = new Line();
-            line1.Stroke = new SolidColorBrush(Windows.UI.Colors.Black);
-            line1.X2 = Plot.ActualWidth;
-            line1.Y2 = Plot.ActualHeight;
+            PrintPlot();
+        }
+
+        void PrintPlot()
+        {
+            double height = Plot.ActualHeight;
+            double width = Plot.ActualWidth;
+            double y0 = height / 2;
+            double Amax = 2;
+            double kt = width / DataArraySize;
+            double kA = -y0 / Amax;
+
+            //Zmazanie starých hodnôt
+            Plot.Children.Remove(line1);
+            Plot.Children.Remove(polylineX);
+            Plot.Children.Remove(polylineY);
+            Plot.Children.Remove(polylineZ);
+
+            //Vykreslenie časovej osi
+            line1.X1 = 0;
+            line1.Y1 = y0;
+            line1.X2 = width;
+            line1.Y2 = y0;
             Plot.Children.Add(line1);
+
+
+            var points = new PointCollection();
+            for (uint i = 0; i < DataArraySize; i++)
+            {
+                points.Add(new Windows.Foundation.Point(i * kt, y0 + PlotDataX[i] * kA));
+            }
+            polylineX.Points = points;
+            Plot.Children.Add(polylineX);
+
+            points = new PointCollection();
+            for (uint i = 0; i < DataArraySize; i++)
+            {
+                points.Add(new Windows.Foundation.Point(i * kt, y0 + PlotDataY[i] * kA));
+            }
+            polylineY.Points = points;
+            Plot.Children.Add(polylineY);
+
+            points = new PointCollection();
+            for (uint i = 0; i < DataArraySize; i++)
+            {
+                points.Add(new Windows.Foundation.Point(i * kt, y0 + PlotDataZ[i] * kA));
+            }
+            polylineZ.Points = points;
+            Plot.Children.Add(polylineZ);
         }
     }
 }
