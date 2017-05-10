@@ -32,28 +32,30 @@ namespace Test1
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public const int DataArraySize = 201;
+        public const int DataArraySize = 201; //Veľkosť poľa pre vykresľovanie
 
-        MediaCapture _mediaCapture;
+        MediaCapture _mediaCapture; //stream pre kameru
         bool _isPreviewing;
 
         Compass _compass;
         LightSensor _lightsensor;
 
         ProximitySensor _proximitysensor;
-        DeviceWatcher _watcher;
+        DeviceWatcher _watcher; //wather pre hľadanie proximitného senzora
+
         Accelerometer _accelerometer;
 
-        double[] PlotDataX;
+        double[] PlotDataX; //polia dát pre vykresľovanie grafu akcelerometra
         double[] PlotDataY;
         double[] PlotDataZ;
+
         Line line1;
         Polyline polylineX;
         Polyline polylineY;
         Polyline polylineZ;
-        uint PlotCounter;
+        uint PlotCounter; //Vykreslenie len každých 100 ms
 
-        DisplayRequest _displayRequest = new DisplayRequest();
+        DisplayRequest _displayRequest = new DisplayRequest(); //Orientácia displeja
 
         // Rotation metadata to apply to the preview stream (MF_MT_VIDEO_ROTATION)
         // Reference: http://msdn.microsoft.com/en-us/library/windows/apps/xaml/hh868174.aspx
@@ -163,11 +165,8 @@ namespace Test1
                 ProximitySensor foundSensor = ProximitySensor.FromId(device.Id);
                 if (null != foundSensor)
                 {
-                    if (null != foundSensor)
-                    {
-                        _proximitysensor = foundSensor;
-                        _proximitysensor.ReadingChanged += new TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>(ProximityReadingChanged);
-                    }
+                    _proximitysensor = foundSensor;
+                    _proximitysensor.ReadingChanged += new TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>(ProximityReadingChanged);
                 }
                 else
                 {
@@ -186,9 +185,9 @@ namespace Test1
                 AccYText.Text = String.Format("Y={0,5:0.00}", reading.AccelerationY);
                 AccZText.Text = String.Format("Z={0,5:0.00}", reading.AccelerationZ);
 
-                Array.Copy(PlotDataX, 1, temp, 0, DataArraySize - 1);
-                temp[DataArraySize - 1] = reading.AccelerationX;
-                Array.Copy(temp, PlotDataX, DataArraySize);
+                Array.Copy(PlotDataX, 1, temp, 0, DataArraySize - 1); //zahodenie najstaršieho merania
+                temp[DataArraySize - 1] = reading.AccelerationX; //pridanie nového merania na koniec poľa
+                Array.Copy(temp, PlotDataX, DataArraySize); //skopírovanie dočastného poľa do poľa dát pre konkrétnu os
 
                 Array.Copy(PlotDataY, 1, temp, 0, DataArraySize - 1);
                 temp[DataArraySize - 1] = reading.AccelerationY;
@@ -198,7 +197,7 @@ namespace Test1
                 temp[DataArraySize - 1] = reading.AccelerationZ;
                 Array.Copy(temp, PlotDataZ, DataArraySize);
 
-                if (PlotCounter++ >= 3)
+                if (PlotCounter++ >= 3) //každý štvrtý krát -> 100ms
                 {
                     PrintPlot();
                     PlotCounter = 0;
@@ -213,7 +212,7 @@ namespace Test1
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 ProximitySensorReading reading = e.Reading;
-                if (null != reading) ProximityImage.Opacity = reading.IsDetected ? 100 : 0;
+                if (null != reading) ProximityImage.Opacity = reading.IsDetected ? 100 : 0; //Zmena priesvitnosť obrázku
             });
         }
 
@@ -234,7 +233,7 @@ namespace Test1
                     else if (reading.HeadingTrueNorth >= 135 && reading.HeadingTrueNorth < 225) smer = "Juh";
                     else smer = "Západ";
 
-                    _rotateTransform.Angle = 360 - (int)reading.HeadingTrueNorth;
+                    _rotateTransform.Angle = 360 - (int)reading.HeadingTrueNorth; //opačný smer otáčania
                     image.RenderTransform = _rotateTransform;
 
                     txtMagnetic.Text = smer + "\n" + String.Format("{0,3:0}°", reading.HeadingTrueNorth);
@@ -256,7 +255,7 @@ namespace Test1
                 else if (e.Reading.IlluminanceInLux < 1200) LightBar.Foreground = new SolidColorBrush(Colors.Orange);
                 else LightBar.Foreground = new SolidColorBrush(Colors.Red);
 
-                if (reading.IlluminanceInLux > 1200) mediaControl.Play();
+                if (reading.IlluminanceInLux > 1200) mediaControl.Play(); //mediaControl je objekt v GUI; spustenie zvučky
             });
         }
 
@@ -268,7 +267,7 @@ namespace Test1
                 _mediaCapture = new MediaCapture();
                 await _mediaCapture.InitializeAsync();
 
-                PreviewControl.Source = _mediaCapture;
+                PreviewControl.Source = _mediaCapture; //priradenie streamu z kamery do zdroja zobrazovacieho objektu v GUI
                 await _mediaCapture.StartPreviewAsync();
                 _isPreviewing = true;
             }
@@ -297,10 +296,10 @@ namespace Test1
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     PreviewControl.Source = null;
-                    if (_displayRequest != null)
+                    /*if (_displayRequest != null)
                     {
                         _displayRequest.RequestRelease();
-                    }
+                    }*/
 
                     _mediaCapture.Dispose();
                     _mediaCapture = null;
@@ -308,7 +307,7 @@ namespace Test1
             }
         }
 
-        private async Task SetPreviewRotationAsync()
+        private async Task SetPreviewRotationAsync() //zmena otočenia streamu z kamery o 90°
         {
             // Add rotation metadata to the preview stream to make sure the aspect ratio / dimensions match when rendering and getting preview frames
             var props = _mediaCapture.VideoDeviceController.GetMediaStreamProperties(MediaStreamType.VideoPreview);
@@ -339,11 +338,11 @@ namespace Test1
             // Handle global application events only if this page is active
             if (Frame.CurrentSourcePageType == typeof(MainPage))
             {
-                var deferral = e.SuspendingOperation.GetDeferral();
+                var deferral = e.SuspendingOperation.GetDeferral(); //opozdenie vypnutia
                 await CleanupCameraAsync();
-                deferral.Complete();
-
                 TurnOffSensors();
+
+                deferral.Complete(); //ukončenie opozdenia
             }
         }
 
@@ -478,10 +477,10 @@ namespace Test1
         {
             double height = Plot.ActualHeight;
             double width = Plot.ActualWidth;
-            double y0 = height / 2;
-            double Amax = 2;
-            double kt = width / DataArraySize;
-            double kA = -y0 / Amax;
+            double y0 = height / 2; //polovica výšky vykresľovacieho okna
+            double Amax = 2; //apmlitúda +-Amax
+            double kt = width / DataArraySize; //smernica čas; vzdialenosť zodpovedajúca jednému meraniu na vykresľovacom okne
+            double kA = -y0 / Amax; //smernica aplitúda; vzdialenosť zodpovedajúca jednému G na vykresľovacom okne
 
             //Zmazanie starých hodnôt
             Plot.Children.Remove(line1);
